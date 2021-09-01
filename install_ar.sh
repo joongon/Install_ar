@@ -47,8 +47,8 @@ sleep 5
 source /root/.bashrc
 cd /root/install_ar
 
-is_v2=(df -h | grep volume2)
-is_v3=(df -h | grep volume3)
+is_v2=$(df -h | grep volume2)
+is_v3=$(df -h | grep volume3)
 
 [ -z $is_v3 ] && install_path="default" || install_path="p_v3"
 [ -z $is_v2 ] && install_path="default" || install_path="p_v2"
