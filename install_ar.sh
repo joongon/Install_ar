@@ -42,14 +42,38 @@ else
 fi
 
 curl -O https://cdn.rigidsolution.com/file/autorclone.zip
-7z x autorclone.zip -o/volume1/homes
-echo "alias ar=\"bash /volume1/homes/AutoRclone/ar.sh\"" >> /root/.bashrc
+
 sleep 5
 source /root/.bashrc
-source /root/.bashrc
+cd /root/install_ar
 
-sudo pip3 install -r /volume1/homes/AutoRclone/requirements.txt
+is_v2=(df -h | grep volume2)
+is_v3=(df -h | grep volume3)
+
+[ -z $is_v3 ] && install_path="default" || install_path="p_v3"
+[ -z $is_v2 ] && install_path="default" || install_path="p_v2"
+
+if [ $install_path = "default" ]; then
+    7z x autorclone.zip -o/volume1/homes
+    echo "alias ar=\"bash /volume1/homes/AutoRclone/ar.sh\"" >> /root/.bashrc
+    sudo pip3 install -r /volume1/homes/AutoRclone/requirements.txt
+    
+elif [ $install_path = "p_v2" ]; then
+    7z x autorclone.zip -o/volume2/
+    echo "alias ar=\"bash /volume2/AutoRclone/ar.sh\"" >> /root/.bashrc
+    sudo pip3 install -r /volume2/AutoRclone/requirements.txt
+
+elif [ $install_path = "p_v3" ]; then
+    7z x autorclone.zip -o/volume3/
+    echo "alias ar=\"bash /volume3/AutoRclone/ar.sh\"" >> /root/.bashrc
+    sudo pip3 install -r /volume3/AutoRclone/requirements.txt
+else
+    prinf "It is not possible to find right path to install AutoRclone on your System,\n
+           so check out the path and try again.\n"
+           exit
+fi
 
 rm -rf /root/install_ar
 
 printf "\nAll installation procedures have been successfully completed.\n\n"
+printf "For using AutoRclone you need to copy Service Account files into $INSTALL_ROOT/accounts."
